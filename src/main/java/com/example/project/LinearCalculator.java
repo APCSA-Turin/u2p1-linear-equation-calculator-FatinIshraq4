@@ -1,80 +1,149 @@
+//Fatin Ishraq
+//AP CSA PD5
+
 package com.example.project;
 public class LinearCalculator{
     //INSTANCE VARIABLES 
-    //4 INTEGER variables (name them: x1,x2,y1,y2) 
-
+    //4 INTEGER variables representing x and y values of two coordinates 
+    int x1;
+    int x2;
+    int y1;
+    int y2;
 
 
     //CONSTRUCTOR
     //1 constructor with 2 String parameters. Each parameter represents a coordinate. 
-    //For example, "(1,2)" and "(3,4)" would be two parameter values 
-    //You will have to parse the string into 4 integers, representing the 2 points.
-    public LinearCalculator(){ // <--add 2 string parameters to this constructor
-     
+    // ex: find numbers from (-1,2)
+    //I learned how to parse strings from https://www.javatpoint.com/java-string-to-int
+    public LinearCalculator(String coord1, String coord2){ // <--2 string parameters in constructor
+
+        coord1 = coord1.substring(1, coord1.length() - 1); // removing parenthesis ()
+        coord2 = coord2.substring(1, coord2.length() - 1);
+        int x = coord1.indexOf(",");
+        int y = coord2.indexOf(",");
+
+        x1 = Integer.parseInt(coord1.substring(0,x)); //seperating based on position of the comma so negatives are included
+        y1 = Integer.parseInt(coord1.substring(x+1));
+        x2 = Integer.parseInt(coord2.substring(0,y));
+        y2 = Integer.parseInt(coord2.substring(y+1));
     }
 
 
 
     //METHODS
-    //getters and setters for the 4 instance variables (8 methods total) 
-    public int getX1(){return 0;}
-    public int getY1(){return 0;}
-    public int getX2(){return 0;}
-    public int getY2(){return 0;}
-    public void setX1(){}
-    public void setY1(){}
-    public void setX2(){}
-    public void setY2(){}
+    //getters and setters for the 4 instance variables 
+    public int getX1(){return x1;}
+    public int getY1(){return y1;}
+    public int getX2(){return x2;}
+    public int getY2(){return y2;}
+    public void setX1(int val){x1=val;}
+    public void setY1(int val){y1=val;}
+    public void setX2(int val){x2=val;}
+    public void setY2(int val){y2=val;}
 
 
-    //distance() -> returns a double. 
-    //calculates the distance between the two points to the nearest HUNDREDTH and returns the value.
+     
+    //calculates the distance between the two points to the nearest HUNDREDTH and returns a double
     public double distance(){
-        return 0.0;
+        double dist = Math.sqrt((Math.pow(x2-x1,2)+Math.pow(y2-y1,2)));
+        dist = Math.round(dist * 100.0) / 100.0;
+        return dist;
+    }
 
     //yInt() -> returns a double.
     //calculates the y intercept of the equation and returns the value to the nearest HUNDREDTH
     //if y-int if undefined, should return -999.99
     public double yInt(){
-        return 0.0;
+        if (slope()==-999.99) {
+            return -999.99;
+        } else {
+        double y = y1;
+        double x = x1;
+        double m = slope();
+        double b = y - (x*m);
+        b = Math.round(b * 100.0) / 100.0;
+        return b;
+        }
+        
     }
 
     //slope() -> returns a double. 
-    //calculates the slope of the equations and returns the value to the nearest HUNDREDTH
-    //if slope is undefined, should return -999.99
+    //calculates the slope of the equation
     public double slope(){
-        return 0.0;
+        if (x2-x1==0) { //if slope is undefined when the bottom is 0 it will return -999.99
+            return -999.99;
+        } else {
+            double yChange = y2-y1;
+            double xChange = x2-x1;
+            double slope = yChange/xChange;
+            return (Math.round(slope * 100.0) / 100.0); //rounds slope to nearest hundred before returning
+        }
     }
 
     //equations() -> returns a String.
     //calculates the final equation in y=mx+b form and returns the string
     //if the equation has no slope, the equation should return -> "undefined"
-    //HINT: You may need other custom methods to decrease the amount of code in the equations() method
-    public String equation(){
-        return "";
+    public String equation() {
+        if (yInt()<0) { //to account for negative y-intercepts
+            if (slope()==-999.99) {
+                return "undefined";
+            } else {
+                if (slope()==0) {
+                    return "y=" + yInt();
+                } else {
+                    if (yInt()==0) {
+                    return "y=" + slope() + "x";
+                } else {
+                    return "y=" + slope() + "x" + yInt();
+                }
+                }
+                
+                
+            }
+        } else {
+            if (slope()==-999.99) {
+                return "undefined";
+            } else {
+                if (slope()==0) {
+                    return "y=" + yInt();
+                } else {
+                    if (yInt()==0) {
+                    return "y=" + slope() + "x";
+                } else {
+                    return "y=" + slope() + "x+" + yInt();
+                }
+                }
+                
+                
+            }
+        }
+
     }
 
 
     //roundedToHundredth(double x)-> returns double
     //calculates the input to the nearest hundredth and returns that value
     public double roundedToHundredth(double x){
-        return 0.0;
+        return (Math.round(x * 100.0) / 100.0);
     }
 
-    //printInfo() -> returns a string of information
-    //this method is tested but you can also call it in your main method if gradle tests are 
-    //not working. 
+    //printInfo() -> returns a string of information 
     public String printInfo(){
-        String str = "The two points are: (" + /*insert var here*/ + "," +/*insert var here*/  + ")";
-        str += " and " + "(" + /*insert var here*/ + "," + /*insert var here*/ + ")";
-        str += "\nThe equation of the line between these points is: " ;
-        str += "\nThe slope of this line is: ";
-        str += "\nThe y-intercept of the line is: ";
-        str += "\nThe distance between the two points is: ";
+        String str = "The two points are: " + "(" + x1 + "," + y1 + ")";
+        str += " and " + "(" + x2 + "," + y2 + ")";
+        str += "\nThe equation of the line between these points is: " + equation();
+        str += "\nThe slope of this line is: " + slope();
+        str += "\nThe y-intercept of the line is: " + yInt();
+        str += "\nThe distance between the two points is: " + distance();
  
         return str;
     }
 
+    public static void main(String[] args) { //to test 
+        LinearCalculator c = new LinearCalculator("(10,5)","(6,-1)");
+        System.out.println(c.printInfo());
+    }
+ 
 
 
 }
